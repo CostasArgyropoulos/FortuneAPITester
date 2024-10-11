@@ -4,8 +4,8 @@ export const ApiContext = createContext();
 
 export const ApiProvider = ({ children }) => {
     const [apiUrl, setApiUrl] = useState('');
-    const [webService, setWebService] = useState('WS_Purchase_Expose_Data');
-    const [functionName, setFunctionName] = useState('f_RFQConfirmed');
+    const [webService, setWebService] = useState(process.env.REACT_APP_DEFAULT_WEBSERVICE);
+    const [functionName, setFunctionName] = useState(process.env.REACT_APP_DEFAULT_FUNCTION);
 
     const value = {
         apiUrl,

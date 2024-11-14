@@ -1,3 +1,50 @@
-.App {
+/* General body styles */
+body {
+  margin: 0;
+  font-family: "Roboto", sans-serif;
+  background: linear-gradient(145deg, #3d3d3d, #a3a3a3);
+  color: #fff;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+/* Header Styles */
+.header {
+  background-color: #333;
+  padding: 20px;
   text-align: center;
+  color: white;
+  cursor: pointer;
+}
+
+.header-title {
+  margin: 0;
+  font-size: 24px;
+  transition: color 0.3s ease;
+}
+
+.header-title:hover {
+  color: #a3a3a3;
+}
+
+/* Footer Styles */
+.footer {
+  background-color: #333;
+  color: white;
+  text-align: center;
+  padding: 10px;
+  position: absolute;
+  width: 100%;
+  bottom: 0;
+}
+
+.footer p {
+  margin: 0;
+  font-size: 14px;
 }

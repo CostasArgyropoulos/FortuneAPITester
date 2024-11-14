@@ -1,36 +1,42 @@
-import React, { useState, useContext } from 'react';
-import axios from 'axios';
-import GetBCToken from '../service/GetBCToken';
-import { ApiContext } from '../context/ApiContext';
-import '../styles.css'
+import React, { useState, useContext } from "react";
+import axios from "axios";
+import GetBCToken from "../service/GetBCToken";
+import { ApiContext } from "../context/ApiContext";
+import "../styles.css";
 
 const QuoteList = () => {
   const { apiUrl } = useContext(ApiContext);
 
   const [quotes, setQuotes] = useState([]);
-  const [inputValue, setInputValue] = useState('');
-  const [postBody, setPostBody] = useState('');
-  const [responseMessage, setResponseMessage] = useState('');
-  const [responseMessageClass, setResponseMessageClass] = useState('');
+  const [inputValue, setInputValue] = useState("");
+  const [postBody, setPostBody] = useState("");
+  const [responseMessage, setResponseMessage] = useState("");
+  const [responseMessageClass, setResponseMessageClass] = useState("");
 
   const handleInputChange = (e) => {
     setInputValue(e.target.value);
-    setResponseMessage('');
+    setResponseMessage("");
   };
 
   const handleAddQuote = (e) => {
     e.preventDefault();
-    if (inputValue.trim() === '') return;
-    
+    if (inputValue.trim() === "") return;
+
     const newQuote = { quote: inputValue.trim() };
     setQuotes([...quotes, newQuote]);
-    
-    setPostBody(JSON.stringify({
-      quotes: [...quotes, newQuote], 
-      onlineProcurementPlatform: 'PROCURESHIP',
-    }, null, 2));
 
-    setInputValue(''); 
+    setPostBody(
+      JSON.stringify(
+        {
+          quotes: [...quotes, newQuote],
+          onlineProcurementPlatform: "PROCURESHIP",
+        },
+        null,
+        2
+      )
+    );
+
+    setInputValue("");
   };
 
   const handlePostRequest = async () => {
@@ -39,25 +45,24 @@ const QuoteList = () => {
       console.log(quotes);
       const data = {
         quotes: JSON.stringify(quotes),
-        onlineProcurementPlatform: 'PROCURESHIP', 
+        onlineProcurementPlatform: "PROCURESHIP",
       };
 
       const response = await axios.post(apiUrl, data, {
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
       });
 
       setResponseMessage(JSON.stringify(response.data, null, 2));
-      setResponseMessageClass('response-success');
-      setQuotes([]); 
-      setPostBody(''); 
-
+      setResponseMessageClass("response-success");
+      setQuotes([]);
+      setPostBody("");
     } catch (error) {
-      console.error('There was an error making the POST request:', error);
-      setResponseMessage('Error: ' + error.message);
-      setResponseMessageClass('response-failure');
+      console.error("There was an error making the POST request:", error);
+      setResponseMessage("Error: " + error.message);
+      setResponseMessageClass("response-failure");
     }
   };
 
@@ -65,11 +70,16 @@ const QuoteList = () => {
     const updatedQuotes = quotes.filter((_, i) => i !== index);
     setQuotes(updatedQuotes);
 
-    
-    setPostBody(JSON.stringify({
-      quotes: updatedQuotes.map((quote) => ({ quote: quote.quote })),
-      onlineProcurementPlatform: 'PROCURESHIP',
-    }, null, 2));
+    setPostBody(
+      JSON.stringify(
+        {
+          quotes: updatedQuotes.map((quote) => ({ quote: quote.quote })),
+          onlineProcurementPlatform: "PROCURESHIP",
+        },
+        null,
+        2
+      )
+    );
   };
 
   return (
@@ -77,14 +87,15 @@ const QuoteList = () => {
       <h2>Quotes List</h2>
 
       <form onSubmit={handleAddQuote}>
-        <input 
+        <input
           type="text"
           value={inputValue}
           onChange={handleInputChange}
           placeholder="Enter a quote"
-          className="input-field"
         />
-        <button type="submit" className="btn">Add Quote</button>
+        <button type="submit" className="action-button">
+          Add Quote
+        </button>
       </form>
 
       <table className="styled-table">
@@ -99,19 +110,26 @@ const QuoteList = () => {
             <tr key={index}>
               <td>{quote.quote}</td>
               <td>
-                <button onClick={() => handleDeleteQuote(index)} className="btn">Delete</button>
+                <button
+                  onClick={() => handleDeleteQuote(index)}
+                  className="action-button"
+                >
+                  Delete
+                </button>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
 
-      <button onClick={handlePostRequest} className="btn">Send POST Request</button>
+      <button onClick={handlePostRequest} className="action-button">
+        Send POST Request
+      </button>
       {apiUrl && <div className="api-url">API URL {apiUrl}</div>}
       {postBody && (
         <div className="post-body">
-        <h3>Post Body:</h3>
-        <pre>{postBody}</pre>
+          <h3>Post Body:</h3>
+          <pre>{postBody}</pre>
         </div>
       )}
 

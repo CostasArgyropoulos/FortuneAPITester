@@ -1,36 +1,42 @@
-import React, { useState, useContext } from 'react';
-import axios from 'axios';
-import GetBCToken from '../service/GetBCToken';
-import { ApiContext } from '../context/ApiContext';
-import '../styles.css'
+import React, { useState, useContext } from "react";
+import axios from "axios";
+import GetBCToken from "../service/GetBCToken";
+import { ApiContext } from "../context/ApiContext";
+import "../styles.css";
 
 const ReceiptList = () => {
   const { apiUrl } = useContext(ApiContext);
 
   const [receipts, setReceipts] = useState([]);
-  const [inputValue, setInputValue] = useState('');
-  const [postBody, setPostBody] = useState('');
-  const [responseMessage, setResponseMessage] = useState('');
-  const [responseMessageClass, setResponseMessageClass] = useState('');
+  const [inputValue, setInputValue] = useState("");
+  const [postBody, setPostBody] = useState("");
+  const [responseMessage, setResponseMessage] = useState("");
+  const [responseMessageClass, setResponseMessageClass] = useState("");
 
   const handleInputChange = (e) => {
     setInputValue(e.target.value);
-    setResponseMessage('');
+    setResponseMessage("");
   };
 
   const handleAddReceipt = (e) => {
     e.preventDefault();
-    if (inputValue.trim() === '') return;
-    
+    if (inputValue.trim() === "") return;
+
     const newReceipt = { receipt: inputValue.trim() };
     setReceipts([...receipts, newReceipt]);
-    
-    setPostBody(JSON.stringify({
-      receipts: [...receipts, newReceipt],
-      onlineProcurementPlatform: 'PROCURESHIP',
-    }, null, 2));
 
-    setInputValue('');
+    setPostBody(
+      JSON.stringify(
+        {
+          receipts: [...receipts, newReceipt],
+          onlineProcurementPlatform: "PROCURESHIP",
+        },
+        null,
+        2
+      )
+    );
+
+    setInputValue("");
   };
 
   const handlePostRequest = async () => {
@@ -38,36 +44,43 @@ const ReceiptList = () => {
       const token = await GetBCToken();
       const data = {
         receipts: JSON.stringify(receipts),
-        onlineProcurementPlatform: 'PROCURESHIP', 
+        onlineProcurementPlatform: "PROCURESHIP",
       };
 
       const response = await axios.post(apiUrl, data, {
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
       });
 
-      setResponseMessage(JSON.stringify(response.data, null, 2)); 
-      setResponseMessageClass('response-success');
-      setReceipts([]); 
-      setPostBody(''); 
-
+      setResponseMessage(JSON.stringify(response.data, null, 2));
+      setResponseMessageClass("response-success");
+      setReceipts([]);
+      setPostBody("");
     } catch (error) {
-      console.error('There was an error making the POST request:', error);
-      setResponseMessage('Error: ' + error.message);
-      setResponseMessageClass('response-failure');
+      console.error("There was an error making the POST request:", error);
+      setResponseMessage("Error: " + error.message);
+      setResponseMessageClass("response-failure");
     }
   };
 
   const handleDeleteReceipt = (index) => {
     const updatedReceipts = receipts.filter((_, i) => i !== index);
     setReceipts(updatedReceipts);
-    
-    setPostBody(JSON.stringify({
-      receipts: updatedReceipts.map((receipt) => ({ receipt: receipt.receipt })),
-      onlineProcurementPlatform: 'PROCURESHIP',
-    }, null, 2));
+
+    setPostBody(
+      JSON.stringify(
+        {
+          receipts: updatedReceipts.map((receipt) => ({
+            receipt: receipt.receipt,
+          })),
+          onlineProcurementPlatform: "PROCURESHIP",
+        },
+        null,
+        2
+      )
+    );
   };
 
   return (
@@ -75,14 +88,15 @@ const ReceiptList = () => {
       <h2>Receipts List</h2>
 
       <form onSubmit={handleAddReceipt}>
-        <input 
+        <input
           type="text"
           value={inputValue}
           onChange={handleInputChange}
           placeholder="Enter a receipt"
-          className="input-field"
         />
-        <button type="submit" className="btn">Add Receipt</button>
+        <button type="submit" className="action-button">
+          Add Receipt
+        </button>
       </form>
 
       <table className="styled-table">
@@ -97,15 +111,22 @@ const ReceiptList = () => {
             <tr key={index}>
               <td>{receipt.receipt}</td>
               <td>
-                <button onClick={() => handleDeleteReceipt(index)} className="btn">Delete</button>
+                <button
+                  onClick={() => handleDeleteReceipt(index)}
+                  className="action-button"
+                >
+                  Delete
+                </button>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
 
-      <button onClick={handlePostRequest} className="btn">Send POST Request</button>
-      
+      <button onClick={handlePostRequest} className="action-button">
+        Send POST Request
+      </button>
+
       {apiUrl && <div className="api-url">API URL {apiUrl}</div>}
 
       {postBody && (

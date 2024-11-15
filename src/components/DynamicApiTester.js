@@ -3,7 +3,11 @@ import axios from "axios";
 import GetBCToken from "../service/GetBCToken";
 import { ApiContext } from "../context/ApiContext";
 import { ProgressSpinner } from "primereact/progressspinner";
-import { useAutosizeTextArea } from "../utils";
+import {
+  useAutosizeTextArea,
+  generateSampleData,
+  convertObjectPropertiesToString,
+} from "../utils";
 import "../styles.css";
 
 const DynamicApiTester = () => {
@@ -83,7 +87,9 @@ const DynamicApiTester = () => {
       const token = await GetBCToken();
       const url = apiUrl;
 
-      const response = await axios.post(url, JSON.parse(postData), {
+      const data = convertObjectPropertiesToString(JSON.parse(postData));
+
+      const response = await axios.post(url, data, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
@@ -107,6 +113,49 @@ const DynamicApiTester = () => {
       handleGetRequest();
     } else if (requestType === "POST") {
       handlePostRequest();
+    }
+  };
+
+  const generateSample = async () => {
+    setPostData("");
+    let url = `${process.env.REACT_APP_DEFAULT_MICROSOFT_ENDPOINT}/${process.env.REACT_APP_TENANT_ID}/${process.env.REACT_APP_ENVIRONMENT}/api/${process.env.REACT_APP_DEFAULT_PUBLISHER}/${group}/v1.0/$metadata#companies(${process.env.REACT_APP_COMPANY_ID})/${entity}`;
+
+    try {
+      setLoading(true);
+      const token = await GetBCToken();
+      const response = await axios.get(url, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const sampleData = generateSampleData(response.data);
+      let index = entity;
+      if (sampleData.entity !== undefined) index = entity;
+      else if (sampleData[`query_${entity}`] !== undefined)
+        index = `query_${entity}`;
+      else if (sampleData[`query_${entity.slice(0, -1)}`] !== undefined)
+        index = `query_${entity.slice(0, -1)}`;
+      let filteredData = sampleData[index];
+      if (filteredData) {
+        Object.keys(filteredData).forEach((key) => {
+          if (
+            key.startsWith("ignore") ||
+            key.startsWith("meta") ||
+            key === "auxiliaryIndex1"
+          ) {
+            delete filteredData[key];
+          }
+        });
+        setPostData(JSON.stringify(filteredData, null, 2));
+      } else throw Error(`Could not resolve entity name query_${index}`);
+    } catch (er) {
+      console.log(er);
+      setResponseMessage(`Error: ${er.message}`);
+      setResponseMessageClass("response-failure");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -171,9 +220,20 @@ const DynamicApiTester = () => {
           />
         )}
 
-        <button type="submit" className="action-button">
-          Send {requestType} Request
-        </button>
+        <div className="form-buttons">
+          <button type="submit" className="action-button">
+            Send {requestType} Request
+          </button>
+          {requestType === "POST" && (
+            <button
+              type="button"
+              className="action-button"
+              onClick={generateSample}
+            >
+              Generate Sample
+            </button>
+          )}
+        </div>
       </form>
 
       {apiUrl && <div className="api-url">{apiUrl}</div>}

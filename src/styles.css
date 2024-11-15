@@ -168,6 +168,13 @@ button:hover,
   color: white;
 }
 
+.form-buttons {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: calc(100% - 120px);
+}
+
 /*<-----------------------Element Styling----------------------->*/
 input[type="text"],
 textarea {

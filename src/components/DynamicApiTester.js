@@ -2,6 +2,7 @@ import React, { useState, useContext, useEffect } from "react";
 import axios from "axios";
 import GetBCToken from "../service/GetBCToken";
 import { ApiContext } from "../context/ApiContext";
+import { ProgressSpinner } from "primereact/progressspinner";
 import "../styles.css";
 
 const DynamicApiTester = () => {
@@ -26,27 +27,27 @@ const DynamicApiTester = () => {
 
   const handleRequestTypeChange = (e) => {
     setRequestType(e.target.value);
-    setResponseMessage("");
+    responseMessageClass === "response-failure" && setResponseMessage("");
   };
 
   const handleGroupChange = (e) => {
     setGroup(e.target.value);
-    setResponseMessage("");
+    responseMessageClass === "response-failure" && setResponseMessage("");
   };
 
   const handleEntitySetChange = (e) => {
     setEntity(e.target.value);
-    setResponseMessage("");
+    responseMessageClass === "response-failure" && setResponseMessage("");
   };
 
   const handleFilterChange = (e) => {
     setFilter(e.target.value);
-    setResponseMessage("");
+    responseMessageClass === "response-failure" && setResponseMessage("");
   };
 
   const handlePostDataChange = (e) => {
     setPostData(e.target.value);
-    setResponseMessage("");
+    responseMessageClass === "response-failure" && setResponseMessage("");
   };
 
   const handleGetRequest = async () => {
@@ -109,7 +110,6 @@ const DynamicApiTester = () => {
     <div className="page-card">
       <h2>API Tester</h2>
 
-      {/* Request Type Selector */}
       <div className="request-type-toggle">
         <label>
           <input
@@ -132,7 +132,6 @@ const DynamicApiTester = () => {
       </div>
 
       <form onSubmit={handleSubmit}>
-        {/* Entity Set Name (Required for both GET/POST) */}
         <input
           type="text"
           placeholder="Enter API Group Name (e.g., sync/InspectorOffline)"
@@ -149,7 +148,6 @@ const DynamicApiTester = () => {
           required
         />
 
-        {/* Filter (Optional, only for GET requests) */}
         {requestType === "GET" && (
           <input
             type="text"
@@ -159,7 +157,6 @@ const DynamicApiTester = () => {
           />
         )}
 
-        {/* POST Body (Only for POST requests) */}
         {requestType === "POST" && (
           <textarea
             placeholder="Enter POST data (JSON format)"
@@ -169,14 +166,14 @@ const DynamicApiTester = () => {
           />
         )}
 
-        <button type="submit" className="action-button" disabled={loading}>
+        <button type="submit" className="action-button">
           Send {requestType} Request
         </button>
       </form>
 
       {apiUrl && <div className="api-url">{apiUrl}</div>}
+      {loading && <ProgressSpinner />}
 
-      {/* API Response Display */}
       {responseMessage && (
         <div className={`response-message ${responseMessageClass}`}>
           <h3>Response:</h3>

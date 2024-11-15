@@ -2,6 +2,7 @@ import React, { useState, useContext } from "react";
 import axios from "axios";
 import GetBCToken from "../service/GetBCToken";
 import { ApiContext } from "../context/ApiContext";
+import { ProgressSpinner } from "primereact/progressspinner";
 import "../styles.css";
 
 const OrderList = () => {
@@ -12,6 +13,7 @@ const OrderList = () => {
   const [postBody, setPostBody] = useState("");
   const [responseMessage, setResponseMessage] = useState("");
   const [responseMessageClass, setResponseMessageClass] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleInputChange = (e) => {
     setInputValue(e.target.value);
@@ -41,6 +43,7 @@ const OrderList = () => {
 
   const handlePostRequest = async () => {
     try {
+      setLoading(true);
       const token = await GetBCToken();
       const data = {
         orders: JSON.stringify(orders),
@@ -62,6 +65,8 @@ const OrderList = () => {
       console.error("There was an error making the POST request:", error);
       setResponseMessage("Error: " + error.message);
       setResponseMessageClass("response-failure");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -125,7 +130,7 @@ const OrderList = () => {
         Send POST Request
       </button>
 
-      {apiUrl && <div className="api-url">API URL {apiUrl}</div>}
+      {apiUrl && <div className="api-url">{apiUrl}</div>}
 
       {postBody && (
         <div className="post-body">
@@ -134,6 +139,7 @@ const OrderList = () => {
         </div>
       )}
 
+      {loading && <ProgressSpinner />}
       {responseMessage && (
         <div className={`response-message ${responseMessageClass}`}>
           <h3>Response:</h3>

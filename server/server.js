@@ -27,6 +27,7 @@ app.post("/get-token", async (req, res) => {
   try {
     const response = await axios.post(tokenUrl, params, {
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      timeout: 10000,
     });
     res.json({ token: response.data.access_token });
   } catch (error) {

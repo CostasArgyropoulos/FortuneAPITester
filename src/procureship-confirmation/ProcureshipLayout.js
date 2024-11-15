@@ -5,9 +5,9 @@ import ReceiptList from "./ReceiptList";
 import WebServiceDefinitions from "../api/WebServiceDefinitions";
 import "../styles.css";
 
-const ProcereshipLayout = () => {
+const ProcureshipLayout = () => {
   return (
-    <div className="main-layout">
+    <div className="procureship-layout">
       <h2>Procureship Confirmation</h2>
       <WebServiceDefinitions />
       <div className="card-container">
@@ -19,4 +19,4 @@ const ProcereshipLayout = () => {
   );
 };
 
-export default ProcereshipLayout;
+export default ProcureshipLayout;

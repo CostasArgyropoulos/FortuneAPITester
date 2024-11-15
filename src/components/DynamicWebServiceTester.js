@@ -8,7 +8,7 @@ const DynamicWebServiceTester = () => {
   };
 
   return (
-    <div className="page">
+    <div className="page-card">
       <h2>Dynamic Web Service Tester</h2>
       <input
         type="text"

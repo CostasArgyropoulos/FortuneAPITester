@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const GetBCToken = async () => {
-  const url = "http://localhost:3010/get-token"; // proxy server
+  const url = `http://localhost:${process.env.REACT_APP_SERVER_PORT}/get-token`; // proxy server
 
   try {
     const response = await axios.post(url);

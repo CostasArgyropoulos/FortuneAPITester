@@ -1,8 +1,9 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect, useRef } from "react";
 import axios from "axios";
 import GetBCToken from "../service/GetBCToken";
 import { ApiContext } from "../context/ApiContext";
 import { ProgressSpinner } from "primereact/progressspinner";
+import { useAutosizeTextArea, convertObjectPropertiesToString } from "../utils";
 import "../styles.css";
 
 const DynamicWebServiceTester = () => {
@@ -18,9 +19,12 @@ const DynamicWebServiceTester = () => {
   const [responseMessage, setResponseMessage] = useState("");
   const [responseMessageClass, setResponseMessageClass] = useState("");
   const [loading, setLoading] = useState(false);
+  const textAreaRef = useRef(null);
+
+  useAutosizeTextArea(textAreaRef.current, postData);
 
   useEffect(() => {
-    let apiUrl_ = `${process.env.REACT_APP_DEFAULT_MICROSOFT_ENDPOINT}/${process.env.REACT_APP_COMPANY_ID}/${process.env.REACT_APP_ENVIRONMENT}/ODataV4/${webService}_${functionName}?company=${process.env.REACT_APP_COMPANY_NAME}`;
+    let apiUrl_ = `${process.env.REACT_APP_DEFAULT_MICROSOFT_ENDPOINT}/${process.env.REACT_APP_TENANT_ID}/${process.env.REACT_APP_ENVIRONMENT}/ODataV4/${webService}_${functionName}?company=${process.env.REACT_APP_COMPANY_NAME}`;
     setApiUrl(apiUrl_);
   }, [webService, functionName, setApiUrl]);
 
@@ -46,8 +50,11 @@ const DynamicWebServiceTester = () => {
       const token = await GetBCToken();
       const url = apiUrl;
 
-      const response = await axios.get(url, {
+      const data = convertObjectPropertiesToString(JSON.parse(postData));
+
+      const response = await axios.post(url, data, {
         headers: {
+          "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
       });
@@ -87,6 +94,7 @@ const DynamicWebServiceTester = () => {
           placeholder="Enter POST data (JSON format)"
           value={postData}
           onChange={handlePostDataChange}
+          ref={textAreaRef}
           required
         />
 

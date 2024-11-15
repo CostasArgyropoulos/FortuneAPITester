@@ -1,8 +1,9 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect, useRef } from "react";
 import axios from "axios";
 import GetBCToken from "../service/GetBCToken";
 import { ApiContext } from "../context/ApiContext";
 import { ProgressSpinner } from "primereact/progressspinner";
+import { useAutosizeTextArea } from "../utils";
 import "../styles.css";
 
 const DynamicApiTester = () => {
@@ -15,6 +16,9 @@ const DynamicApiTester = () => {
   const [responseMessage, setResponseMessage] = useState("");
   const [responseMessageClass, setResponseMessageClass] = useState("");
   const [loading, setLoading] = useState(false);
+  const textAreaRef = useRef(null);
+
+  useAutosizeTextArea(textAreaRef.current, postData);
 
   useEffect(() => {
     let apiUrl_ = `${process.env.REACT_APP_DEFAULT_MICROSOFT_ENDPOINT}/${process.env.REACT_APP_TENANT_ID}/${process.env.REACT_APP_ENVIRONMENT}/api/${process.env.REACT_APP_DEFAULT_PUBLISHER}/${group}/v1.0/companies(${process.env.REACT_APP_COMPANY_ID})/${entity}`;
@@ -163,6 +167,7 @@ const DynamicApiTester = () => {
             value={postData}
             onChange={handlePostDataChange}
             required={requestType === "POST"}
+            ref={textAreaRef}
           />
         )}
 

@@ -182,11 +182,6 @@ textarea {
   background-color: #f5f5f5;
 }
 
-textarea {
-  resize: vertical;
-  height: 100px;
-}
-
 input[type="radio"] {
   margin-right: 10px;
 }

@@ -130,7 +130,7 @@ const OrderList = () => {
         Send POST Request
       </button>
 
-      {apiUrl && <div className="api-url">API URL {apiUrl}</div>}
+      {apiUrl && <div className="api-url">{apiUrl}</div>}
 
       {postBody && (
         <div className="post-body">

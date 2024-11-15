@@ -110,7 +110,6 @@ const DynamicApiTester = () => {
     <div className="page-card">
       <h2>API Tester</h2>
 
-      {/* Request Type Selector */}
       <div className="request-type-toggle">
         <label>
           <input
@@ -133,7 +132,6 @@ const DynamicApiTester = () => {
       </div>
 
       <form onSubmit={handleSubmit}>
-        {/* Entity Set Name (Required for both GET/POST) */}
         <input
           type="text"
           placeholder="Enter API Group Name (e.g., sync/InspectorOffline)"
@@ -150,7 +148,6 @@ const DynamicApiTester = () => {
           required
         />
 
-        {/* Filter (Optional, only for GET requests) */}
         {requestType === "GET" && (
           <input
             type="text"
@@ -160,7 +157,6 @@ const DynamicApiTester = () => {
           />
         )}
 
-        {/* POST Body (Only for POST requests) */}
         {requestType === "POST" && (
           <textarea
             placeholder="Enter POST data (JSON format)"
@@ -178,7 +174,6 @@ const DynamicApiTester = () => {
       {apiUrl && <div className="api-url">{apiUrl}</div>}
       {loading && <ProgressSpinner />}
 
-      {/* API Response Display */}
       {responseMessage && (
         <div className={`response-message ${responseMessageClass}`}>
           <h3>Response:</h3>

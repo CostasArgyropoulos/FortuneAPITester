@@ -1,8 +1,38 @@
+/*<---------------Main Layouts / Template Styling--------------->*/
 .home-page {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+}
+
+.page-card {
+  padding: 5rem;
+}
+
+.card-container {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  max-width: 1200px;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.card {
+  flex: 1;
+  max-width: 50%;
+  min-width: 300px;
+  background-color: #4e4e4e;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  padding: 20px;
+  color: #fff;
+}
+
+.card h2 {
+  text-align: center;
+  color: #f5f5f5;
 }
 
 .header {
@@ -83,6 +113,7 @@
   font-size: 14px;
 }
 
+/*<-----------------------Buttons styling----------------------->*/
 .choice-buttons {
   margin-top: 20px;
 }
@@ -114,7 +145,8 @@ button {
   transition: background 0.3s ease;
 }
 
-button:hover {
+button:hover,
+.action-button:hover {
   background-color: #a3a3a3;
   color: #333;
 }
@@ -136,6 +168,7 @@ button:hover {
   color: white;
 }
 
+/*<-----------------------Element Styling----------------------->*/
 input[type="text"],
 textarea {
   width: calc(100% - 120px);
@@ -154,35 +187,8 @@ textarea {
   height: 100px;
 }
 
-.procureship-layout {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.card-container {
-  display: flex;
-  justify-content: center;
-  width: 100%;
-  max-width: 1200px;
-  gap: 20px;
-  flex-wrap: wrap;
-}
-
-.card {
-  flex: 1;
-  max-width: 50%;
-  min-width: 300px;
-  background-color: #4e4e4e;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-  padding: 20px;
-  color: #fff;
-}
-
-.card h2 {
-  text-align: center;
-  color: #f5f5f5;
+input[type="radio"] {
+  margin-right: 10px;
 }
 
 .styled-table {
@@ -255,17 +261,15 @@ textarea {
 .request-type-toggle label {
   font-weight: 300;
 }
-
-input[type="radio"] {
-  margin-right: 10px;
+/*<-----------------Predefined Services styling----------------->*/
+.procureship-layout {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-button:hover,
-.action-button:hover {
-  background-color: #a3a3a3;
-  color: #333;
-}
-
-.page-card {
-  padding: 5rem;
+.procureship-definitions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }

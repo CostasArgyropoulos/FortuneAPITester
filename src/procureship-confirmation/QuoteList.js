@@ -45,7 +45,6 @@ const QuoteList = () => {
     try {
       setLoading(true);
       const token = await GetBCToken();
-      console.log(quotes);
       const data = {
         quotes: JSON.stringify(quotes),
         onlineProcurementPlatform: "PROCURESHIP",

@@ -168,6 +168,13 @@ button:hover,
   color: white;
 }
 
+.form-buttons {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: calc(100% - 120px);
+}
+
 /*<-----------------------Element Styling----------------------->*/
 input[type="text"],
 textarea {
@@ -180,11 +187,6 @@ textarea {
   margin-right: 10px;
   color: #333;
   background-color: #f5f5f5;
-}
-
-textarea {
-  resize: vertical;
-  height: 100px;
 }
 
 input[type="radio"] {

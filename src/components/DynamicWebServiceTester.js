@@ -71,45 +71,47 @@ const DynamicWebServiceTester = () => {
   };
 
   const generateSample = async () => {
-    setPostData("");
-    let url = `${process.env.REACT_APP_DEFAULT_MICROSOFT_ENDPOINT}/${process.env.REACT_APP_TENANT_ID}/${process.env.REACT_APP_ENVIRONMENT}/ODataV4/${webService}_${functionName}?company=${process.env.REACT_APP_COMPANY_NAME}?$expand`;
-    try {
-      setLoading(true);
-      const token = await GetBCToken();
-      const response = await axios.get(url, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
+    setResponseMessage("Error: Not implemented");
+    setResponseMessageClass("response-failure");
+    // setPostData("");
+    // let url = `${process.env.REACT_APP_DEFAULT_MICROSOFT_ENDPOINT}/${process.env.REACT_APP_TENANT_ID}/${process.env.REACT_APP_ENVIRONMENT}/ODataV4/${webService}_${functionName}?company=${process.env.REACT_APP_COMPANY_NAME}?$expand`;
+    // try {
+    //   setLoading(true);
+    //   const token = await GetBCToken();
+    //   const response = await axios.get(url, {
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //       Authorization: `Bearer ${token}`,
+    //     },
+    //   });
 
-      const sampleData = generateSampleData(response.data);
-      let index = entity;
-      if (sampleData.entity !== undefined) index = entity;
-      else if (sampleData[`query_${entity}`] !== undefined)
-        index = `query_${entity}`;
-      else if (sampleData[`query_${entity.slice(0, -1)}`] !== undefined)
-        index = `query_${entity.slice(0, -1)}`;
-      let filteredData = sampleData[index];
-      if (filteredData) {
-        Object.keys(filteredData).forEach((key) => {
-          if (
-            key.startsWith("ignore") ||
-            key.startsWith("meta") ||
-            key === "auxiliaryIndex1"
-          ) {
-            delete filteredData[key];
-          }
-        });
-        setPostData(JSON.stringify(filteredData, null, 2));
-      } else throw Error(`Could not resolve entity name query_${index}`);
-    } catch (er) {
-      console.error(er);
-      setResponseMessage(`Error: ${er.message}`);
-      setResponseMessageClass("response-failure");
-    } finally {
-      setLoading(false);
-    }
+    //   const sampleData = generateSampleData(response.data);
+    //   let index = entity;
+    //   if (sampleData.entity !== undefined) index = entity;
+    //   else if (sampleData[`query_${entity}`] !== undefined)
+    //     index = `query_${entity}`;
+    //   else if (sampleData[`query_${entity.slice(0, -1)}`] !== undefined)
+    //     index = `query_${entity.slice(0, -1)}`;
+    //   let filteredData = sampleData[index];
+    //   if (filteredData) {
+    //     Object.keys(filteredData).forEach((key) => {
+    //       if (
+    //         key.startsWith("ignore") ||
+    //         key.startsWith("meta") ||
+    //         key === "auxiliaryIndex1"
+    //       ) {
+    //         delete filteredData[key];
+    //       }
+    //     });
+    //     setPostData(JSON.stringify(filteredData, null, 2));
+    //   } else throw Error(`Could not resolve entity name query_${index}`);
+    // } catch (er) {
+    //   console.error(er);
+    //   setResponseMessage(`Error: ${er.message}`);
+    //   setResponseMessageClass("response-failure");
+    // } finally {
+    //   setLoading(false);
+    // }
   };
 
   return (

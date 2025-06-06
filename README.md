@@ -11,5 +11,9 @@ The aim of this project is to set up an API communication environment with our a
 - Copy `.env.sample` and paste it in the same path as `.env`.
 - Modify the properties to provide the Azure Portal credentials (and the sandbox tenant ID).
 
-From the terminal in the default project folder, run: `npm start` (run `npm install` if you have not downloaded packages yet).  
+From the default project folder, run: `npm run build` (run `npm install` if you have not downloaded packages yet).  
 From the terminal in the server directory, run `node server.js`.
+
+**➡️ Once the server is running, open your browser and go to: `http://localhost:5000`**
+
+> 💡 _To make the application publicly accessible (e.g., for testing or demos), you can use [Ngrok](https://ngrok.com/) by running `ngrok http 5000` in a separate terminal._

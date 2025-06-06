@@ -11,6 +11,10 @@ app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
+const path = require("path");
+
+app.use(express.static(path.join(__dirname, "../build")));
+
 app.post("/get-token", async (req, res) => {
   const clientId = process.env.CLIENT_ID;
   const clientSecret = process.env.CLIENT_SECRET;
@@ -39,6 +43,10 @@ app.post("/get-token", async (req, res) => {
       .status(500)
       .json({ error: error.response ? error.response.data : error.message });
   }
+});
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "../build", "index.html"));
 });
 
 app.listen(PORT, () => {

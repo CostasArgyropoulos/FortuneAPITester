@@ -12,10 +12,9 @@ This project provides a dynamic environment to test APIs and Business Central we
 - Response messages and errors are displayed in the UI.
 - Works for generic Business Central endpoints, OData web services, and codeunit functions.
 
-## Getting Started
+## Developer Notes
 
-1. Clone the project and run:
-
+- Clone the project from GitHub
 - From the default project folder, run: `npm run build` (run `npm install` if you have not downloaded packages yet).
 - From the terminal in the server directory, run `node server.js`.
 

@@ -178,6 +178,7 @@ button:hover,
 /*<-----------------------Element Styling----------------------->*/
 input[type="text"],
 textarea {
+  max-height: 20rem;
   width: calc(100% - 120px);
   padding: 10px;
   margin: 15px 0;

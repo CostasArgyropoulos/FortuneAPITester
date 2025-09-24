@@ -9,14 +9,14 @@ import "../styles.css";
 const Header = () => {
   const navigate = useNavigate();
 
-  const items = [
-    {
-      label: "ProcureShip Confirmation",
-      command: () => {
-        navigate("/procureship-confirmation");
-      },
-    },
-  ];
+  // const items = [
+  //   {
+  //     label: "ProcureShip Confirmation",
+  //     command: () => {
+  //       navigate("/procureship-confirmation");
+  //     },
+  //   },
+  // ];
 
   const start = (
     <div className="logo-frame" onClick={() => navigate("/")}>
@@ -26,7 +26,8 @@ const Header = () => {
 
   return (
     <div className="header-container">
-      <Menubar model={items} start={start} />
+      {/* <Menubar start={start} model={items}/> */}
+      <Menubar start={start} />
     </div>
   );
 };

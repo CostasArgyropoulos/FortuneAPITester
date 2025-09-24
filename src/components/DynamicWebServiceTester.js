@@ -3,7 +3,7 @@ import axios from "axios";
 import GetBCToken from "../service/GetBCToken";
 import { ApiContext } from "../context/ApiContext";
 import { ProgressSpinner } from "primereact/progressspinner";
-import { useAutosizeTextArea, convertObjectPropertiesToString } from "../utils";
+import { useAutosizeTextArea } from "../utils";
 import "../styles.css";
 
 const DynamicWebServiceTester = () => {
@@ -15,6 +15,7 @@ const DynamicWebServiceTester = () => {
     functionName,
     setFunctionName,
   } = useContext(ApiContext);
+  const [parameterName, setParameterName] = useState("");
   const [postData, setPostData] = useState("");
   const [responseMessage, setResponseMessage] = useState("");
   const [responseMessageClass, setResponseMessageClass] = useState("");
@@ -30,6 +31,11 @@ const DynamicWebServiceTester = () => {
 
   const handleWebServiceChange = (e) => {
     setWebService(e.target.value);
+    responseMessageClass === "response-failure" && setResponseMessage("");
+  };
+
+  const handleParameterNameChange = (e) => {
+    setParameterName(e.target.value);
     responseMessageClass === "response-failure" && setResponseMessage("");
   };
 
@@ -50,9 +56,11 @@ const DynamicWebServiceTester = () => {
       const token = await GetBCToken();
       const url = apiUrl;
 
-      const data = convertObjectPropertiesToString(JSON.parse(postData));
+      let parsedData = JSON.parse(postData);
+      if (parameterName && parameterName.trim() !== "")
+        parsedData = { [parameterName]: JSON.stringify(parsedData) };
 
-      const response = await axios.post(url, data, {
+      const response = await axios.post(url, parsedData, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
@@ -132,6 +140,13 @@ const DynamicWebServiceTester = () => {
           value={functionName}
           onChange={handleFunctionNameChange}
           required
+        />
+
+        <input
+          type="text"
+          placeholder="Enter the Paramenter Name (as defined in the Web Service codeunit)"
+          value={parameterName}
+          onChange={handleParameterNameChange}
         />
 
         <textarea

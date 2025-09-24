@@ -1,8 +1,8 @@
 import React, { useState, useContext, useEffect, useRef } from "react";
 import axios from "axios";
-import GetBCToken from "../service/GetBCToken";
 import { ApiContext } from "../context/ApiContext";
 import { ProgressSpinner } from "primereact/progressspinner";
+import { useGetBCToken } from "../hooks/useGetBCToken";
 import {
   useAutosizeTextArea,
   generateSampleData,
@@ -11,8 +11,19 @@ import {
 import "../styles.css";
 
 const DynamicApiTester = () => {
-  const { apiUrl, setApiUrl, group, setGroup, entity, setEntity } =
-    useContext(ApiContext);
+  const {
+    apiUrl,
+    setApiUrl,
+    tenantId,
+    environment,
+    publisher,
+    group,
+    setGroup,
+    entity,
+    setEntity,
+    companyId,
+  } = useContext(ApiContext);
+  const getBCToken = useGetBCToken();
 
   const [filter, setFilter] = useState("");
   const [requestType, setRequestType] = useState("GET");
@@ -20,18 +31,40 @@ const DynamicApiTester = () => {
   const [responseMessage, setResponseMessage] = useState("");
   const [responseMessageClass, setResponseMessageClass] = useState("");
   const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const textAreaRef = useRef(null);
 
   useAutosizeTextArea(textAreaRef.current, postData);
 
   useEffect(() => {
-    let apiUrl_ = `${process.env.REACT_APP_DEFAULT_MICROSOFT_ENDPOINT}/${process.env.REACT_APP_TENANT_ID}/${process.env.REACT_APP_ENVIRONMENT}/api/${process.env.REACT_APP_DEFAULT_PUBLISHER}/${group}/v1.0/companies(${process.env.REACT_APP_COMPANY_ID})/${entity}`;
-
+    if (
+      !tenantId ||
+      !environment ||
+      !publisher ||
+      !group ||
+      !companyId ||
+      !entity
+    ) {
+      setErrorMessage("Missing required settings to build API URL");
+      setApiUrl("");
+      return;
+    }
+    setErrorMessage("");
+    let apiUrl_ = `https://api.businesscentral.dynamics.com/v2.0/${tenantId}/${environment}/api/${publisher}/${group}/v1.0/companies(${companyId})/${entity}`;
     if (filter && filter.trim() !== "") {
-      apiUrl_ += `?$filter=${filter}`;
+      apiUrl_ += `?$filter=${encodeURIComponent(filter.trim())}`;
     }
     setApiUrl(apiUrl_);
-  }, [group, entity, filter, setApiUrl]);
+  }, [
+    tenantId,
+    environment,
+    publisher,
+    group,
+    companyId,
+    entity,
+    filter,
+    setApiUrl,
+  ]);
 
   const handleRequestTypeChange = (e) => {
     setRequestType(e.target.value);
@@ -59,21 +92,20 @@ const DynamicApiTester = () => {
   };
 
   const handleGetRequest = async () => {
+    if (!apiUrl) {
+      setResponseMessage("Cannot send GET request: missing required settings");
+      setResponseMessageClass("response-failure");
+      return;
+    }
     try {
       setLoading(true);
-      const token = await GetBCToken();
-      const url = apiUrl;
-
-      const response = await axios.get(url, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+      const token = await getBCToken();
+      const response = await axios.get(apiUrl, {
+        headers: { Authorization: `Bearer ${token}` },
       });
-
       setResponseMessage(JSON.stringify(response.data, null, 2));
       setResponseMessageClass("response-success");
     } catch (error) {
-      console.error("GET request failed:", error);
       setResponseMessage(`Error: ${error.message}`);
       setResponseMessageClass("response-failure");
     } finally {
@@ -82,24 +114,24 @@ const DynamicApiTester = () => {
   };
 
   const handlePostRequest = async () => {
+    if (!apiUrl) {
+      setResponseMessage("Cannot send POST request: missing required settings");
+      setResponseMessageClass("response-failure");
+      return;
+    }
     try {
       setLoading(true);
-      const token = await GetBCToken();
-      const url = apiUrl;
-
+      const token = await getBCToken();
       const data = convertObjectPropertiesToString(JSON.parse(postData));
-
-      const response = await axios.post(url, data, {
+      const response = await axios.post(apiUrl, data, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
       });
-
       setResponseMessage(JSON.stringify(response.data, null, 2));
       setResponseMessageClass("response-success");
     } catch (error) {
-      console.error("POST request failed:", error);
       setResponseMessage(`Error: ${error.message}`);
       setResponseMessageClass("response-failure");
     } finally {
@@ -117,20 +149,28 @@ const DynamicApiTester = () => {
   };
 
   const generateSample = async () => {
-    setResponseMessage("");
-    setPostData("");
-    let url = `${process.env.REACT_APP_DEFAULT_MICROSOFT_ENDPOINT}/${process.env.REACT_APP_TENANT_ID}/${process.env.REACT_APP_ENVIRONMENT}/api/${process.env.REACT_APP_DEFAULT_PUBLISHER}/${group}/v1.0/$metadata#companies(${process.env.REACT_APP_COMPANY_ID})/${entity}`;
-
+    if (
+      !tenantId ||
+      !environment ||
+      !publisher ||
+      !group ||
+      !companyId ||
+      !entity
+    ) {
+      setResponseMessage("Cannot generate sample: missing required settings");
+      setResponseMessageClass("response-failure");
+      return;
+    }
+    let url = `https://api.businesscentral.dynamics.com/v2.0/${tenantId}/${environment}/api/${publisher}/${group}/v1.0/$metadata#companies(${companyId})/${entity}`;
     try {
       setLoading(true);
-      const token = await GetBCToken();
+      const token = await getBCToken();
       const response = await axios.get(url, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
       });
-
       const sampleData = generateSampleData(response.data);
       let indexKey = Object.keys(sampleData).find(
         (k) => k.toLowerCase() === entity.toLowerCase()
@@ -150,7 +190,6 @@ const DynamicApiTester = () => {
             sampleData
           )}`
         );
-
       let filteredData = { ...sampleData[indexKey] };
       Object.keys(filteredData).forEach((key) => {
         if (
@@ -162,8 +201,8 @@ const DynamicApiTester = () => {
         }
       });
       setPostData(JSON.stringify(filteredData, null, 2));
+      setResponseMessage("");
     } catch (er) {
-      console.log(er);
       setResponseMessage(`Error: ${er.message}`);
       setResponseMessageClass("response-failure");
     } finally {
@@ -199,15 +238,14 @@ const DynamicApiTester = () => {
       <form onSubmit={handleSubmit}>
         <input
           type="text"
-          placeholder="Enter API Group Name (e.g., sync/InspectorOffline)"
+          placeholder="Enter API Group Name"
           value={group}
           onChange={handleGroupChange}
           required
         />
-
         <input
           type="text"
-          placeholder="Enter Entity Set Name (e.g., findings/inspections)"
+          placeholder="Enter Entity Set Name"
           value={entity}
           onChange={handleEntitySetChange}
           required
@@ -216,7 +254,7 @@ const DynamicApiTester = () => {
         {requestType === "GET" && (
           <input
             type="text"
-            placeholder="Enter filter (optional) E.g. code eq 'Code-1'"
+            placeholder="Enter filter (optional)"
             value={filter}
             onChange={handleFilterChange}
           />
@@ -248,9 +286,11 @@ const DynamicApiTester = () => {
         </div>
       </form>
 
+      {errorMessage && (
+        <div className="response-message response-failure">{errorMessage}</div>
+      )}
       {apiUrl && <div className="api-url">{apiUrl}</div>}
       {loading && <ProgressSpinner />}
-
       {responseMessage && (
         <div className={`response-message ${responseMessageClass}`}>
           <h3>Response:</h3>

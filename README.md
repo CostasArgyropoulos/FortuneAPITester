@@ -1,18 +1,23 @@
 # Fortune API Tester
 
-The aim of this project is to set up an API communication environment with our application and avoid resetting it every time. We do not have to recreate JSON files while testing the endpoint or worry about them being in the correct format. This version works for our Procureship Integration for RFQ confirmations, but it can be expanded for every web service we have, or we could even make it more generic and set our tests by providing only the schema.
+This project provides a dynamic environment to test APIs and Business Central web services. All settings (environment, Business Central connection, and server OAuth credentials) are stored **in local storage at runtime** and can be updated via the UI. The application automatically builds API URLs, stringifies POST data, and applies parameters as needed. This version supports Procureship Integration for RFQ confirmations but is fully expandable for any other web service or API endpoint.
 
-### Available Scripts
+## Features
 
-- From the default working directory, copy `.env.sample` and paste it in the same path as `.env`.
-- Modify the properties to target your Business Central instance.
-- **Note:** You do not need to provide `REACT_APP_DEFAULT_WEBSERVICE` and `REACT_APP_DEFAULT_FUNCTION`, but doing so could save you some time if you want to avoid re-adding them in the text inputs on every browser refresh.
-- Open a second terminal in your VS Code and change the directory to the server folder (`cd ./server`).
-- Copy `.env.sample` and paste it in the same path as `.env`.
-- Modify the properties to provide the Azure Portal credentials (and the sandbox tenant ID).
+- Configure **Environment Settings**, **Business Central API Connection**, and **Server OAuth Settings** directly from the browser.
+- Local storage persists your settings between sessions.
+- Dynamically builds API URLs based on the current settings.
+- Automatically applies parameters and stringifies POST data before sending.
+- Supports **GET** and **POST** requests with optional filters and sample data generation.
+- Response messages and errors are displayed in the UI.
+- Works for generic Business Central endpoints, OData web services, and codeunit functions.
 
-From the default project folder, run: `npm run build` (run `npm install` if you have not downloaded packages yet).  
-From the terminal in the server directory, run `node server.js`.
+## Getting Started
+
+1. Clone the project and run:
+
+- From the default project folder, run: `npm run build` (run `npm install` if you have not downloaded packages yet).
+- From the terminal in the server directory, run `node server.js`.
 
 **➡️ Once the server is running, open your browser and go to: `http://localhost:5000`**
 

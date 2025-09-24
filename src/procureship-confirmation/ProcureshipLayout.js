@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import QuoteList from "./QuoteList";
 import OrderList from "./OrderList";
 import ReceiptList from "./ReceiptList";
@@ -12,20 +12,32 @@ const ProcureshipLayout = () => {
     setWebService,
     functionName,
     setFunctionName,
+    tenantId,
+    environment,
+    companyName,
   } = useContext(ApiContext);
 
+  const [errorMessage, setErrorMessage] = useState("");
+
   useEffect(() => {
-    let apiUrl_ = `${process.env.REACT_APP_DEFAULT_MICROSOFT_ENDPOINT}/${process.env.REACT_APP_TENANT_ID}/${process.env.REACT_APP_ENVIRONMENT}/ODataV4/${webService}_${functionName}?company=${process.env.REACT_APP_COMPANY_NAME}`;
+    if (
+      !tenantId ||
+      !environment ||
+      !webService ||
+      !functionName ||
+      !companyName
+    ) {
+      setErrorMessage("Missing required settings to build Web Service URL");
+      setApiUrl("");
+      return;
+    }
+    setErrorMessage("");
+    let apiUrl_ = `https://api.businesscentral.dynamics.com/v2.0/${tenantId}/${environment}/ODataV4/${webService}_${functionName}?company=${companyName}`;
     setApiUrl(apiUrl_);
-  }, [webService, functionName, setApiUrl]);
+  }, [tenantId, environment, companyName, webService, functionName, setApiUrl]);
 
-  const onWebServiceChange = (e) => {
-    setWebService(e.target.value);
-  };
-
-  const onFunctionNameChange = (e) => {
-    setFunctionName(e.target.value);
-  };
+  const onWebServiceChange = (e) => setWebService(e.target.value);
+  const onFunctionNameChange = (e) => setFunctionName(e.target.value);
 
   return (
     <div className="procureship-layout">
@@ -37,14 +49,21 @@ const ProcureshipLayout = () => {
             value={webService}
             onChange={onWebServiceChange}
             placeholder="Input Web Service"
+            required
           />
           <input
             type="text"
             value={functionName}
             onChange={onFunctionNameChange}
             placeholder="Input Function Name"
+            required
           />
         </form>
+        {errorMessage && (
+          <div className="response-message response-failure">
+            {errorMessage}
+          </div>
+        )}
       </div>
       <div className="card-container">
         <QuoteList />

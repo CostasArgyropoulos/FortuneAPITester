@@ -7,7 +7,7 @@
 }
 
 .page-card {
-  padding: 5rem;
+  padding: 3rem;
 }
 
 .card-container {
@@ -35,38 +35,27 @@
   color: #f5f5f5;
 }
 
-.header {
-  background-color: #2c2c2c;
-  padding: 20px;
+.header-container {
   display: flex;
   align-items: center;
-  justify-content: center;
-  text-align: center;
+  justify-content: flex-start;
+  background-color: #2c2c2c;
+  padding: 1rem 2rem;
   color: #fff;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0.2rem 0.5rem rgba(0, 0, 0, 0.3);
+  cursor: pointer;
 }
 
 .logo-frame {
   background-color: #f0f0f0;
-  padding: 10px;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.logo-frame:hover {
-  background-color: #e0e0e0;
-}
-
-.header-container {
-  background-color: #333;
-  padding: 10px 20px;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  margin-right: 1rem;
 }
 
 .header-logo {
-  width: 120px;
+  width: 6rem;
   height: auto;
-  cursor: pointer;
   transition: transform 0.2s ease-in-out;
 }
 
@@ -74,28 +63,9 @@
   transform: scale(1.05);
 }
 
-.p-menubar {
-  background-color: transparent;
-  border: none;
-  color: white;
-  gap: 3rem;
-}
-
-.p-menubar-root-list {
-  display: flex;
-  justify-content: flex-end;
-}
-
-.p-menuitem-text {
-  color: white;
-}
-
-.p-menuitem-content:hover .p-menuitem-text {
-  color: black;
-}
-
-.p-menuitem.p-focus .p-menuitem-text {
-  color: black;
+.header-title {
+  font-size: 1.8rem;
+  font-weight: 600;
 }
 
 .footer {
@@ -114,10 +84,6 @@
 }
 
 /*<-----------------------Buttons styling----------------------->*/
-.choice-buttons {
-  margin-top: 20px;
-}
-
 .choice-button {
   margin: 10px;
   padding: 15px 25px;
@@ -264,6 +230,49 @@ input[type="radio"] {
 .request-type-toggle label {
   font-weight: 300;
 }
+
+.forms-container {
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.form-block {
+  display: flex;
+  flex-direction: column;
+  width: 30rem;
+}
+
+.form-block h2 {
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+}
+
+.form-block input {
+  margin-bottom: 1rem;
+  padding: 0.8rem;
+  font-size: 1rem;
+  border-radius: 0.5rem;
+  border: 0.1rem solid #ccc;
+}
+
+.action-button {
+  margin-top: 2rem;
+  padding: 1rem 2rem;
+  font-size: 1rem;
+  border-radius: 0.5rem;
+  background-color: darkblue;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.action-button:hover {
+  background-color: #0056b3;
+}
+
 /*<-----------------Predefined Services styling----------------->*/
 .procureship-layout {
   display: flex;

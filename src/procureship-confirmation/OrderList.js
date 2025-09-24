@@ -1,12 +1,13 @@
 import React, { useState, useContext } from "react";
 import axios from "axios";
-import GetBCToken from "../service/GetBCToken";
+import { useGetBCToken } from "../hooks/useGetBCToken";
 import { ApiContext } from "../context/ApiContext";
 import { ProgressSpinner } from "primereact/progressspinner";
 import "../styles.css";
 
 const OrderList = () => {
   const { apiUrl } = useContext(ApiContext);
+  const getBCToken = useGetBCToken();
 
   const [orders, setOrders] = useState([]);
   const [inputValue, setInputValue] = useState("");
@@ -44,7 +45,7 @@ const OrderList = () => {
   const handlePostRequest = async () => {
     try {
       setLoading(true);
-      const token = await GetBCToken();
+      const token = await getBCToken();
       const data = {
         orders: JSON.stringify(orders),
         onlineProcurementPlatform: "PROCURESHIP",

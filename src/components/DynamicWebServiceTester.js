@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect, useRef } from "react";
 import axios from "axios";
-import GetBCToken from "../service/GetBCToken";
+import { useGetBCToken } from "../hooks/useGetBCToken";
 import { ApiContext } from "../context/ApiContext";
 import { ProgressSpinner } from "primereact/progressspinner";
 import { useAutosizeTextArea } from "../utils";
@@ -14,33 +14,51 @@ const DynamicWebServiceTester = () => {
     setWebService,
     functionName,
     setFunctionName,
+    companyName,
+    tenantId,
+    environment,
   } = useContext(ApiContext);
+  const getBCToken = useGetBCToken();
+
   const [parameterName, setParameterName] = useState("");
   const [postData, setPostData] = useState("");
   const [responseMessage, setResponseMessage] = useState("");
   const [responseMessageClass, setResponseMessageClass] = useState("");
   const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const textAreaRef = useRef(null);
 
   useAutosizeTextArea(textAreaRef.current, postData);
 
   useEffect(() => {
-    let apiUrl_ = `${process.env.REACT_APP_DEFAULT_MICROSOFT_ENDPOINT}/${process.env.REACT_APP_TENANT_ID}/${process.env.REACT_APP_ENVIRONMENT}/ODataV4/${webService}_${functionName}?company=${process.env.REACT_APP_COMPANY_NAME}`;
+    if (
+      !tenantId ||
+      !environment ||
+      !webService ||
+      !functionName ||
+      !companyName
+    ) {
+      setErrorMessage("Missing required settings to build Web Service URL");
+      setApiUrl("");
+      return;
+    }
+    setErrorMessage("");
+    let apiUrl_ = `https://api.businesscentral.dynamics.com/v2.0/${tenantId}/${environment}/ODataV4/${webService}_${functionName}?company=${companyName}`;
     setApiUrl(apiUrl_);
-  }, [webService, functionName, setApiUrl]);
+  }, [tenantId, environment, webService, functionName, companyName, setApiUrl]);
 
   const handleWebServiceChange = (e) => {
     setWebService(e.target.value);
     responseMessageClass === "response-failure" && setResponseMessage("");
   };
 
-  const handleParameterNameChange = (e) => {
-    setParameterName(e.target.value);
+  const handleFunctionNameChange = (e) => {
+    setFunctionName(e.target.value);
     responseMessageClass === "response-failure" && setResponseMessage("");
   };
 
-  const handleFunctionNameChange = (e) => {
-    setFunctionName(e.target.value);
+  const handleParameterNameChange = (e) => {
+    setParameterName(e.target.value);
     responseMessageClass === "response-failure" && setResponseMessage("");
   };
 
@@ -51,26 +69,27 @@ const DynamicWebServiceTester = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!apiUrl) {
+      setResponseMessage("Cannot send request: missing required settings");
+      setResponseMessageClass("response-failure");
+      return;
+    }
     try {
       setLoading(true);
-      const token = await GetBCToken();
-      const url = apiUrl;
-
+      const token = await getBCToken();
       let parsedData = JSON.parse(postData);
-      if (parameterName && parameterName.trim() !== "")
+      if (parameterName && parameterName.trim() !== "") {
         parsedData = { [parameterName]: JSON.stringify(parsedData) };
-
-      const response = await axios.post(url, parsedData, {
+      }
+      const response = await axios.post(apiUrl, parsedData, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
       });
-
       setResponseMessage(JSON.stringify(response.data, null, 2));
       setResponseMessageClass("response-success");
     } catch (error) {
-      console.error("GET request failed:", error);
       setResponseMessage(`Error: ${error.message}`);
       setResponseMessageClass("response-failure");
     } finally {
@@ -84,27 +103,24 @@ const DynamicWebServiceTester = () => {
       <form onSubmit={handleSubmit}>
         <input
           type="text"
-          placeholder="Enter Web Service Name ('Service Name' in 'Web Services' Page of Business Central)"
+          placeholder="Enter Web Service Name"
           value={webService}
           onChange={handleWebServiceChange}
           required
         />
-
         <input
           type="text"
-          placeholder="Enter the Function Name (as defined in the Web Service codeunit)"
+          placeholder="Enter Function Name"
           value={functionName}
           onChange={handleFunctionNameChange}
           required
         />
-
         <input
           type="text"
-          placeholder="Enter the Parameter Name (as defined in the Web Service codeunit)"
+          placeholder="Enter Parameter Name (optional)"
           value={parameterName}
           onChange={handleParameterNameChange}
         />
-
         <textarea
           placeholder="Enter POST data (JSON format)"
           value={postData}
@@ -112,16 +128,18 @@ const DynamicWebServiceTester = () => {
           ref={textAreaRef}
           required
         />
-
         <div className="form-buttons">
           <button type="submit" className="action-button">
             Send Request
           </button>
         </div>
-
+        {errorMessage && (
+          <div className="response-message response-failure">
+            {errorMessage}
+          </div>
+        )}
         {apiUrl && <div className="api-url">{apiUrl}</div>}
         {loading && <ProgressSpinner />}
-
         {responseMessage && (
           <div className={`response-message ${responseMessageClass}`}>
             <h3>Response:</h3>

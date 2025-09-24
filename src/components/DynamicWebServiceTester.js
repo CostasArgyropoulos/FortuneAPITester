@@ -144,7 +144,7 @@ const DynamicWebServiceTester = () => {
 
         <input
           type="text"
-          placeholder="Enter the Paramenter Name (as defined in the Web Service codeunit)"
+          placeholder="Enter the Parameter Name (as defined in the Web Service codeunit)"
           value={parameterName}
           onChange={handleParameterNameChange}
         />

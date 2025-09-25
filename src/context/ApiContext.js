@@ -53,7 +53,7 @@ export const ApiProvider = ({ children }) => {
     getInitialValue(LOCAL_STORAGE_KEYS.clientSecret)
   );
   const [contentType, setContentType] = useState(
-    getInitialValue(LOCAL_STORAGE_KEYS.contentType) || contentType
+    getInitialValue(LOCAL_STORAGE_KEYS.contentType) || "application/json"
   );
 
   useEffect(

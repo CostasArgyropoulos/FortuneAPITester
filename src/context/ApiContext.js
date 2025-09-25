@@ -14,12 +14,10 @@ const LOCAL_STORAGE_KEYS = {
   publisher: "bc_publisher",
   clientId: "server_clientId",
   clientSecret: "server_clientSecret",
+  contentType: "bc_contentType",
 };
 
-const getInitialValue = (key) => {
-  const value = localStorage.getItem(key);
-  return value || "";
-};
+const getInitialValue = (key) => localStorage.getItem(key) || "";
 
 export const ApiProvider = ({ children }) => {
   const [apiUrl, setApiUrl] = useState("");
@@ -53,6 +51,9 @@ export const ApiProvider = ({ children }) => {
   );
   const [clientSecret, setClientSecret] = useState(
     getInitialValue(LOCAL_STORAGE_KEYS.clientSecret)
+  );
+  const [contentType, setContentType] = useState(
+    getInitialValue(LOCAL_STORAGE_KEYS.contentType) || contentType
   );
 
   useEffect(
@@ -99,21 +100,10 @@ export const ApiProvider = ({ children }) => {
     () => localStorage.setItem(LOCAL_STORAGE_KEYS.clientSecret, clientSecret),
     [clientSecret]
   );
-
-  const resetDefaults = () => {
-    setGroup("");
-    setEntity("");
-    setWebService("");
-    setFunctionName("");
-    setTenantId("");
-    setCompanyId("");
-    setEnvironment("");
-    setCompanyName("");
-    setPublisher("");
-    setClientId("");
-    setClientSecret("");
-    localStorage.clear();
-  };
+  useEffect(
+    () => localStorage.setItem(LOCAL_STORAGE_KEYS.contentType, contentType),
+    [contentType]
+  );
 
   return (
     <ApiContext.Provider
@@ -142,7 +132,8 @@ export const ApiProvider = ({ children }) => {
         setClientId,
         clientSecret,
         setClientSecret,
-        resetDefaults,
+        contentType,
+        setContentType,
       }}
     >
       {children}

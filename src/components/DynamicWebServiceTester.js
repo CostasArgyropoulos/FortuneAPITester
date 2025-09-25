@@ -17,6 +17,7 @@ const DynamicWebServiceTester = () => {
     companyName,
     tenantId,
     environment,
+    contentType,
   } = useContext(ApiContext);
   const getBCToken = useGetBCToken();
 
@@ -83,7 +84,7 @@ const DynamicWebServiceTester = () => {
       }
       const response = await axios.post(apiUrl, parsedData, {
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": contentType,
           Authorization: `Bearer ${token}`,
         },
       });

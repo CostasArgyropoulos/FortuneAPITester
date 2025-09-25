@@ -6,7 +6,7 @@ import { ProgressSpinner } from "primereact/progressspinner";
 import "../styles.css";
 
 const OrderList = () => {
-  const { apiUrl } = useContext(ApiContext);
+  const { apiUrl, contentType } = useContext(ApiContext);
   const getBCToken = useGetBCToken();
 
   const [orders, setOrders] = useState([]);
@@ -53,7 +53,7 @@ const OrderList = () => {
 
       const response = await axios.post(apiUrl, data, {
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": contentType,
           Authorization: `Bearer ${token}`,
         },
       });

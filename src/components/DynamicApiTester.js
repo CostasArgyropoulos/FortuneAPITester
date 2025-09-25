@@ -22,6 +22,7 @@ const DynamicApiTester = () => {
     entity,
     setEntity,
     companyId,
+    contentType,
   } = useContext(ApiContext);
   const getBCToken = useGetBCToken();
 
@@ -125,7 +126,7 @@ const DynamicApiTester = () => {
       const data = convertObjectPropertiesToString(JSON.parse(postData));
       const response = await axios.post(apiUrl, data, {
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": contentType,
           Authorization: `Bearer ${token}`,
         },
       });
@@ -167,7 +168,7 @@ const DynamicApiTester = () => {
       const token = await getBCToken();
       const response = await axios.get(url, {
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": contentType,
           Authorization: `Bearer ${token}`,
         },
       });

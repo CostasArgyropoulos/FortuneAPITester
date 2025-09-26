@@ -15,6 +15,8 @@ This project provides a dynamic environment to test APIs and Business Central we
 ## Developer Notes
 
 - Clone the project from GitHub
+- Copy `.env.sample` to `.env` in the same directory.
+- Fill in the REACT_APP_ENCRYPTION_KEY property like `REACT_APP_ENCRYPTION_KEY=<your-encryption-key>`. This key is used to encrypt sensitive data stored in the browser.
 - From the default project folder, run: `npm run build` (run `npm install` if you have not downloaded packages yet).
 - From the terminal in the server directory, run `node server.js`.
 

@@ -23,10 +23,8 @@ const HomePage = () => {
     setCompanyName,
     publisher,
     setPublisher,
-    clientId,
-    setClientId,
-    clientSecret,
-    setClientSecret,
+    clientCredentials,
+    setClientCredentials,
     contentType,
     setContentType,
   } = useContext(ApiContext);
@@ -47,8 +45,7 @@ const HomePage = () => {
   };
 
   const clearOAuthSettings = () => {
-    setClientId("");
-    setClientSecret("");
+    setClientCredentials({ clientId: "", clientSecret: "" });
   };
 
   return (
@@ -179,16 +176,26 @@ const HomePage = () => {
             Client ID
             <input
               type="text"
-              value={clientId}
-              onChange={(e) => setClientId(e.target.value)}
+              value={clientCredentials.clientId}
+              onChange={(e) =>
+                setClientCredentials((prev) => ({
+                  ...prev,
+                  clientId: e.target.value,
+                }))
+              }
             />
           </label>
           <label>
             Client Secret
             <input
               type="password"
-              value={clientSecret}
-              onChange={(e) => setClientSecret(e.target.value)}
+              value={clientCredentials.clientSecret}
+              onChange={(e) =>
+                setClientCredentials((prev) => ({
+                  ...prev,
+                  clientSecret: e.target.value,
+                }))
+              }
             />
           </label>
           <button className="action-button" onClick={clearOAuthSettings}>

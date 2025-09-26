@@ -14,10 +14,14 @@ app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, "../build")));
 
 app.post("/get-token", async (req, res) => {
-  const { clientId, clientSecret, tenantId } = req.body;
+  const { clientCredentials, tenantId } = req.body;
+  if (!clientCredentials || !tenantId) {
+    return res.status(400).json({ error: "Missing fields" });
+  }
 
-  if (!clientId || !clientSecret || !tenantId) {
-    return res.status(400).json({ error: "Missing required OAuth fields" });
+  const { clientId, clientSecret } = clientCredentials;
+  if (!clientId || !clientSecret) {
+    return res.status(400).json({ error: "Missing OAuth fields" });
   }
 
   const tokenUrl = `https://login.microsoftonline.com/${tenantId}/oauth2/v2.0/token`;

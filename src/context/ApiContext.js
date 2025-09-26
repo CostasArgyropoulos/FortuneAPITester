@@ -1,4 +1,5 @@
 import React, { createContext, useState, useEffect } from "react";
+import { encryptData, decryptData } from "../utils/crypto";
 
 export const ApiContext = createContext();
 
@@ -12,12 +13,18 @@ const LOCAL_STORAGE_KEYS = {
   environment: "bc_environment",
   companyName: "bc_companyName",
   publisher: "bc_publisher",
-  clientId: "server_clientId",
-  clientSecret: "server_clientSecret",
+  clientCredentials: "server_client_credentials",
   contentType: "bc_contentType",
 };
 
-const getInitialValue = (key) => localStorage.getItem(key) || "";
+const getInitialValue = (key) => {
+  if (key === LOCAL_STORAGE_KEYS.clientCredentials) {
+    const stored = localStorage.getItem(key);
+    if (stored) return decryptData(stored);
+    return { clientId: "", clientSecret: "" };
+  }
+  return localStorage.getItem(key) || "";
+};
 
 export const ApiProvider = ({ children }) => {
   const [apiUrl, setApiUrl] = useState("");
@@ -46,64 +53,59 @@ export const ApiProvider = ({ children }) => {
   const [publisher, setPublisher] = useState(
     getInitialValue(LOCAL_STORAGE_KEYS.publisher)
   );
-  const [clientId, setClientId] = useState(
-    getInitialValue(LOCAL_STORAGE_KEYS.clientId)
-  );
-  const [clientSecret, setClientSecret] = useState(
-    getInitialValue(LOCAL_STORAGE_KEYS.clientSecret)
+  const [clientCredentials, setClientCredentials] = useState(
+    getInitialValue(LOCAL_STORAGE_KEYS.clientCredentials)
   );
   const [contentType, setContentType] = useState(
     getInitialValue(LOCAL_STORAGE_KEYS.contentType) || "application/json"
   );
 
-  useEffect(
-    () => localStorage.setItem(LOCAL_STORAGE_KEYS.group, group),
-    [group]
-  );
-  useEffect(
-    () => localStorage.setItem(LOCAL_STORAGE_KEYS.entity, entity),
-    [entity]
-  );
-  useEffect(
-    () => localStorage.setItem(LOCAL_STORAGE_KEYS.webService, webService),
-    [webService]
-  );
-  useEffect(
-    () => localStorage.setItem(LOCAL_STORAGE_KEYS.functionName, functionName),
-    [functionName]
-  );
-  useEffect(
-    () => localStorage.setItem(LOCAL_STORAGE_KEYS.tenantId, tenantId),
-    [tenantId]
-  );
-  useEffect(
-    () => localStorage.setItem(LOCAL_STORAGE_KEYS.companyId, companyId),
-    [companyId]
-  );
-  useEffect(
-    () => localStorage.setItem(LOCAL_STORAGE_KEYS.environment, environment),
-    [environment]
-  );
-  useEffect(
-    () => localStorage.setItem(LOCAL_STORAGE_KEYS.companyName, companyName),
-    [companyName]
-  );
-  useEffect(
-    () => localStorage.setItem(LOCAL_STORAGE_KEYS.publisher, publisher),
-    [publisher]
-  );
-  useEffect(
-    () => localStorage.setItem(LOCAL_STORAGE_KEYS.clientId, clientId),
-    [clientId]
-  );
-  useEffect(
-    () => localStorage.setItem(LOCAL_STORAGE_KEYS.clientSecret, clientSecret),
-    [clientSecret]
-  );
-  useEffect(
-    () => localStorage.setItem(LOCAL_STORAGE_KEYS.contentType, contentType),
-    [contentType]
-  );
+  useEffect(() => {
+    localStorage.setItem(LOCAL_STORAGE_KEYS.group, group);
+  }, [group]);
+
+  useEffect(() => {
+    localStorage.setItem(LOCAL_STORAGE_KEYS.entity, entity);
+  }, [entity]);
+
+  useEffect(() => {
+    localStorage.setItem(LOCAL_STORAGE_KEYS.webService, webService);
+  }, [webService]);
+
+  useEffect(() => {
+    localStorage.setItem(LOCAL_STORAGE_KEYS.functionName, functionName);
+  }, [functionName]);
+
+  useEffect(() => {
+    localStorage.setItem(LOCAL_STORAGE_KEYS.tenantId, tenantId);
+  }, [tenantId]);
+
+  useEffect(() => {
+    localStorage.setItem(LOCAL_STORAGE_KEYS.companyId, companyId);
+  }, [companyId]);
+
+  useEffect(() => {
+    localStorage.setItem(LOCAL_STORAGE_KEYS.environment, environment);
+  }, [environment]);
+
+  useEffect(() => {
+    localStorage.setItem(LOCAL_STORAGE_KEYS.companyName, companyName);
+  }, [companyName]);
+
+  useEffect(() => {
+    localStorage.setItem(LOCAL_STORAGE_KEYS.publisher, publisher);
+  }, [publisher]);
+
+  useEffect(() => {
+    localStorage.setItem(LOCAL_STORAGE_KEYS.contentType, contentType);
+  }, [contentType]);
+
+  useEffect(() => {
+    localStorage.setItem(
+      LOCAL_STORAGE_KEYS.clientCredentials,
+      encryptData(clientCredentials)
+    );
+  }, [clientCredentials]);
 
   return (
     <ApiContext.Provider
@@ -128,10 +130,8 @@ export const ApiProvider = ({ children }) => {
         setCompanyName,
         publisher,
         setPublisher,
-        clientId,
-        setClientId,
-        clientSecret,
-        setClientSecret,
+        clientCredentials,
+        setClientCredentials,
         contentType,
         setContentType,
       }}

@@ -6,7 +6,7 @@ const TOKEN_KEY = "bc_token";
 const EXPIRY_KEY = "bc_token_expiry";
 
 export const useGetBCToken = () => {
-  const { clientId, clientSecret, tenantId } = useContext(ApiContext);
+  const { clientCredentials, tenantId } = useContext(ApiContext);
 
   const getToken = async () => {
     const now = Date.now();
@@ -18,19 +18,22 @@ export const useGetBCToken = () => {
       return cachedToken;
     }
 
-    if (!clientId || !clientSecret || !tenantId) {
+    if (
+      !clientCredentials?.clientId ||
+      !clientCredentials?.clientSecret ||
+      !tenantId
+    ) {
       throw new Error("Missing required OAuth fields");
     }
 
     const response = await axios.post("/get-token", {
-      clientId,
-      clientSecret,
+      clientCredentials,
       tenantId,
     });
+
     const { token, expires_in } = response.data;
 
     const expiry = now + expires_in * 1000;
-
     localStorage.setItem(TOKEN_KEY, token);
     localStorage.setItem(EXPIRY_KEY, expiry.toString());
 
